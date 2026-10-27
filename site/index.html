@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--PREVIEW-START-->
+<title>PROSTO CRM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="PROSTO CRM: переписка с клиентами из WhatsApp и Instagram в одном окне, каталог товаров и карточка клиента. Для магазинов, которые продают в мессенджерах.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: светлая «рабочая» страница, герой с живым макетом окна CRM; дальше короткие секции на одной сетке 1120px */
+:root{
+  --bg:#f6f7fb; --surface:#ffffff; --ink:#151a33; --muted:#5b6283; --line:#e2e5f0;
+  --brand:#2b3bd6; --brand-ink:#ffffff; --brand-soft:#e8eafc;
+  --wa:#1f9d55; --ig:#c13584; --warn:#b26a00; --warn-soft:#fff2dc; --ok-soft:#e3f5ea;
+  --display:"Unbounded", "Golos Text", system-ui, sans-serif;
+  --body:"Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1220; --surface:#181c2e; --ink:#eef0fa; --muted:#a3a9c6; --line:#2a3049;
+  --brand:#7c88ff; --brand-ink:#0f1220; --brand-soft:#232a52;
+  --wa:#3fcf7d; --ig:#ef6db4; --warn:#ffb648; --warn-soft:#3a2c14; --ok-soft:#163323; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1220; --surface:#181c2e; --ink:#eef0fa; --muted:#a3a9c6; --line:#2a3049;
+  --brand:#7c88ff; --brand-ink:#0f1220; --brand-soft:#232a52;
+  --wa:#3fcf7d; --ig:#ef6db4; --warn:#ffb648; --warn-soft:#3a2c14; --ok-soft:#163323; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2rem, 5vw, 3.5rem);line-height:1.08;font-weight:700}
+h2{font-size:clamp(1.5rem, 3.2vw, 2.25rem);line-height:1.15;font-weight:700}
+h3{font-size:1.05rem;line-height:1.3;font-weight:500}
+p{margin:0}
+.lead{font-size:1.2rem;color:var(--muted);max-width:34em}
+.eyebrow{font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+
+/* header */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--bg)}
+header{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.05rem;text-decoration:none}
+.logo b{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--brand);color:var(--brand-ink);font-size:1.1rem}
+.nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-size:.95rem;color:var(--muted)}
+.nav ul a{text-decoration:none}
+.nav ul a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;font:600 1rem/1 var(--body);text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:transform .15s ease, background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-main{background:var(--brand);color:var(--brand-ink)}
+.btn-ghost{border-color:var(--line);background:var(--surface)}
+.btn-sm{padding:10px 16px;font-size:.92rem}
+@media (max-width:760px){.nav ul{display:none}}
+
+/* hero */
+.hero{padding-block:64px 72px}
+.hero-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:56px;align-items:center}
+.hero-text{display:grid;gap:24px;min-width:0}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}.hero{padding-block:40px 56px}}
+
+/* mock window */
+.mock{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 60px -30px color-mix(in srgb, var(--brand) 35%, transparent);overflow:hidden;min-width:0}
+.mock-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+.mock-bar strong{color:var(--ink);font-weight:600}
+.mock-body{display:grid;grid-template-columns:1fr 1.15fr}
+.list{border-right:1px solid var(--line)}
+.row{display:grid;grid-template-columns:36px 1fr auto;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:.82rem;line-height:1.35}
+.row.active{background:var(--brand-soft)}
+.ava{position:relative;width:36px;height:36px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-weight:600;font-size:.8rem}
+.ava i{position:absolute;right:-3px;bottom:-3px;font:700 .55rem/1 var(--body);font-style:normal;color:#fff;padding:2px 3px;border-radius:4px}
+.ava i.wa{background:var(--wa)} .ava i.ig{background:var(--ig)}
+.row .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .msg{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .time{color:var(--muted);font-size:.72rem}
+.row>div{min-width:0}
+.tag{display:inline-block;margin-top:4px;padding:1px 7px;border-radius:5px;font-size:.7rem;font-weight:600}
+.t-new{background:var(--brand-soft);color:var(--brand)} .t-work{background:var(--warn-soft);color:var(--warn)} .t-done{background:var(--ok-soft);color:var(--wa)}
+.chat{display:flex;flex-direction:column;gap:10px;padding:16px;background:var(--bg);font-size:.84rem;min-width:0}
+.bubble{max-width:88%;padding:9px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.bubble.me{align-self:flex-end;background:var(--brand);color:var(--brand-ink);border-color:transparent}
+.product{align-self:flex-end;display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;max-width:88%;padding:8px;border-radius:12px;background:var(--surface);border:1px solid var(--brand)}
+.product .ph{width:44px;height:44px;border-radius:8px;background:repeating-linear-gradient(135deg,var(--brand-soft) 0 6px,var(--surface) 6px 12px)}
+.product b{display:block;font-size:.82rem}
+.product span{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.quick span{padding:4px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:.72rem;color:var(--muted)}
+@media (max-width:520px){.mock-body{grid-template-columns:1fr}.list .row:nth-child(n+3){display:none}.list{border-right:0;border-bottom:1px solid var(--line)}}
+
+/* sections */
+section.block{padding-block:72px;border-top:1px solid var(--line)}
+.head{display:grid;gap:14px;margin-bottom:40px;max-width:44em}
+.pain{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.pain p{color:var(--muted)}
+.pain h3{margin-bottom:8px}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.feat{background:var(--surface);padding:28px;display:grid;gap:10px;align-content:start}
+.feat p{color:var(--muted);font-size:.97rem}
+.feat .ic{width:40px;height:40px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+.feat svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:900px){.pain,.features{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.pain,.features{grid-template-columns:1fr}}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{display:grid;gap:10px;padding-top:20px;border-top:2px solid var(--ink)}
+.steps li::before{counter-increment:s;content:"Шаг " counter(s);font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+.steps p{color:var(--muted)}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+
+.rule{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px}
+.clock{font-family:var(--display);font-size:clamp(2.5rem,7vw,4rem);font-weight:700;color:var(--brand);line-height:1}
+.rule p{color:var(--muted);max-width:40em}
+@media (max-width:600px){.rule{grid-template-columns:1fr}}
+
+.cta{padding-block:80px;border-top:1px solid var(--line)}
+.cta-box{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center;background:var(--brand);color:var(--brand-ink);border-radius:24px;padding:48px}
+.cta-box .lead{color:inherit;opacity:.85}
+.cta-box .btn-main{background:var(--brand-ink);color:var(--brand)}
+.contacts{display:grid;gap:12px;font-size:1.05rem}
+.contacts span{display:block;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.contacts a{text-decoration:none;font-weight:600}
+@media (max-width:800px){.cta-box{grid-template-columns:1fr;padding:32px 24px}}
+
+footer{padding-block:32px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+</style>
+<!--PREVIEW-END-->
+</head>
+<body>
+<!--BODY-START-->
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="PROSTO CRM"><b>P</b>PROSTO</a>
+    <ul>
+      <li><a href="#features">Возможности</a></li>
+      <li><a href="#how">Как начать</a></li>
+      <li><a href="#contact">Контакты</a></li>
+    </ul>
+    <a class="btn btn-main btn-sm" href="#contact">Попробовать</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <span class="eyebrow">CRM для продаж в мессенджерах</span>
+        <h1>WhatsApp и Instagram <em>в одном окне</em></h1>
+        <p class="lead">PROSTO собирает переписку с клиентами из всех ваших номеров и аккаунтов. Менеджеры видят, кто кому отвечает, и отправляют товар из каталога прямо в чат.</p>
+        <div class="chips">
+          <span class="chip"><span class="dot" style="background:var(--wa)"></span>WhatsApp Business</span>
+          <span class="chip"><span class="dot" style="background:var(--ig)"></span>Instagram Direct</span>
+          <span class="chip">Веб, Android, iOS</span>
+        </div>
+        <div class="actions">
+          <a class="btn btn-main" href="#contact">Оставить заявку</a>
+          <a class="btn btn-ghost" href="#features">Что умеет</a>
+        </div>
+      </div>
+
+      <div class="mock" aria-label="Пример экрана PROSTO CRM">
+        <div class="mock-bar"><strong>PROSTO CRM</strong><span>Азиз · менеджер</span></div>
+        <div class="mock-body">
+          <div class="list">
+            <div class="row active"><div class="ava">ДК<i class="wa">WA</i></div><div><div class="name">Дилноза Каримова</div><div class="msg">Есть размер M?</div><span class="tag t-new">Новый</span></div><span class="time">14:05</span></div>
+            <div class="row"><div class="ava">MS<i class="ig">IG</i></div><div><div class="name">@malika.style</div><div class="msg">Сколько стоит доставка?</div><span class="tag t-new">Новый</span></div><span class="time">13:50</span></div>
+            <div class="row"><div class="ava">Б<i class="wa">WA</i></div><div><div class="name">Бахтиёр</div><div class="msg">Вы: Отправил счёт, ждём оплату</div><span class="tag t-work">В работе</span></div><span class="time">12:20</span></div>
+            <div class="row"><div class="ava">SM<i class="ig">IG</i></div><div><div class="name">@sardor_m</div><div class="msg">Спасибо, всё получил!</div><span class="tag t-done">Купил</span></div><span class="time">11:10</span></div>
+          </div>
+          <div class="chat">
+            <div class="bubble">Здравствуйте! Видела у вас синее платье.</div>
+            <div class="bubble">Есть размер M?</div>
+            <div class="bubble me">Да, есть! Вот оно:</div>
+            <div class="product"><div class="ph"></div><div><b>Платье синее, миди</b><span>2 900 сом · S, M, L</span></div></div>
+            <div class="quick"><span>Есть в наличии</span><span>Доставка 1–2 дня</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Знакомо?</span>
+        <h2>Клиенты пишут везде, а ответить успевают не всем</h2>
+      </div>
+      <div class="pain">
+        <div><h3>Переписка на разных телефонах</h3><p>Один номер у продавца, Instagram у владельца. Чтобы понять, что уже обещали клиенту, приходится спрашивать коллег.</p></div>
+        <div><h3>Сообщения теряются</h3><p>Новый клиент написал вечером, утром его никто не увидел. Покупка ушла к конкуренту.</p></div>
+        <div><h3>Фото товаров ищут в галерее</h3><p>Менеджер листает телефон, чтобы найти нужное фото, цену и размеры. Клиент ждёт.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="features">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Возможности</span>
+        <h2>Всё, что нужно для продаж в чате, и ничего лишнего</h2>
+      </div>
+      <div class="features">
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg></div><h3>Общий список чатов</h3><p>WhatsApp и Instagram в одной ленте. Фильтры «Все», «Мои», «Новые» и поиск по имени или номеру.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></div><h3>Кто ответил, тот ведёт</h3><p>Кнопка «Взять себе»: клиент закрепляется за менеджером, и двое не отвечают одному человеку.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/></svg></div><h3>Каталог под рукой</h3><p>Фото, цена, размеры и остаток. Кнопка «Предложить» отправляет товар клиенту в один клик.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M9 12h6M9 16h6"/></svg></div><h3>Загрузка из Excel</h3><p>Заполните шаблон и загрузите. Повторная загрузка обновит цены и остатки по артикулу.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><h3>Статус каждого клиента</h3><p>Новый, В работе, Купил, Отказ. Сразу видно, кого нужно дожать, а кто уже купил.</p></div>
+        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div><h3>Быстрые ответы</h3><p>Частые фразы в одну кнопку: «Есть в наличии», «Доставка 1–2 дня». Заметки к карточке клиента.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap"><div class="rule">
+      <div class="clock">24 ч</div>
+      <div>
+        <h3 style="margin-bottom:8px">Работаем по правилам Meta</h3>
+        <p>WhatsApp и Instagram разрешают бизнесу свободно отвечать в течение 24 часов после последнего сообщения клиента. PROSTO показывает, у кого окно скоро закроется, чтобы вы успели ответить.</p>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="block" id="how">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Как начать</span>
+        <h2>Запуск за один день</h2>
+      </div>
+      <ol class="steps">
+        <li><h3>Подключаем ваши аккаунты</h3><p>Номер WhatsApp Business и Instagram магазина. Поможем пройти настройку в Meta.</p></li>
+        <li><h3>Загружаете товары</h3><p>Заполняете Excel-шаблон с артикулами, ценами, размерами и фото.</p></li>
+        <li><h3>Добавляете сотрудников</h3><p>Каждый менеджер входит под своим именем и видит свои чаты.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <div class="wrap">
+      <div class="cta-box">
+        <div style="display:grid;gap:16px">
+          <h2>Покажем PROSTO на ваших товарах</h2>
+          <p class="lead">Напишите нам, и мы проведём демо и поможем перенести каталог.</p>
+          <div><a class="btn btn-main" href="https://wa.me/996700000000" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+        </div>
+        <div class="contacts">
+          <div><span>WhatsApp</span><a href="https://wa.me/996700000000" target="_blank" rel="noopener">+996 700 000 000</a></div>
+          <div><span>Instagram</span><a href="https://instagram.com/prosto.kg" target="_blank" rel="noopener">@prosto.kg</a></div>
+          <div><span>Почта</span>hello@prosto.kg</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 PROSTO · prosto.kg</span><span>Бишкек, Кыргызстан</span></div>
+</footer>
+<!--BODY-END-->
+</body>
+</html>

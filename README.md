@@ -35,3 +35,7 @@ flutter build web         # собрать сайт в app/build/web
 | `app/lib/data/product_import.dart` | Чтение товаров из Excel |
 | `app/lib/ui/` | Экраны: вход, список чатов, переписка, товары и карточка клиента |
 | `app/test/` | Тесты |
+
+## Сайт prosto.kg
+
+Лендинг лежит в папке `site/` (один файл `index.html`, без сборки). Публикуется через Cloudflare Pages: Build command пустая, Build output directory `site`.
